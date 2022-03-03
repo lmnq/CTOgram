@@ -23,14 +23,14 @@ func NewStore() (*Store, error) {
 		return nil, err
 	}
 
-	if err = createTables(db); err != nil {
+	if err = CreateTable(db); err != nil {
 		return nil, err
 	}
 
 	return &Store{DB: db}, nil
 }
 
-func createTables(db *sql.DB) error {
+func CreateTable(db *sql.DB) error {
 	_, err := db.Exec(`
 			CREATE TABLE IF NOT EXISTS "cities" (
 				"ID" INTEGER NOT NULL UNIQUE,

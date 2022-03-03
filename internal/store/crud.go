@@ -42,8 +42,23 @@ func (s *Store) AddCity(city models.City) error {
 
 // DeleteCityByID ..
 func (s *Store) DeleteCityByID(id int) error {
-	_, err := s.DB.Exec(`DELETE FROM cities WHERE ID=?`, id)
-	return err
+	tx, err := s.DB.Begin()
+	if err != nil {
+		tx.Rollback()
+		return err
+	}
+	row := s.DB.QueryRow(`SELECT ID FROM cities WHERE ID=?`, id)
+	var existingID int
+	if err := row.Scan(&existingID); err != nil {
+		tx.Rollback()
+		return err
+	}
+	_, err = s.DB.Exec(`DELETE FROM cities WHERE ID=?`, id)
+	if err != nil {
+		tx.Rollback()
+		return err
+	}
+	return tx.Commit()
 }
 
 // UpdateCity ..

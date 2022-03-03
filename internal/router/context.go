@@ -1,6 +1,7 @@
 package router
 
 import (
+	"encoding/json"
 	"net/http"
 )
 
@@ -21,4 +22,15 @@ func (ctx *Context) setURLValues(keys, values []string) {
 // SetParam ..
 func (ctx *Context) SetParam(key, value string) {
 	ctx.Params[key] = value
+}
+
+func (ctx *Context) WriteError(status int, err string) {
+	ctx.ResponseWriter.Header().Set("Content-Type", "application/json")
+	ctx.ResponseWriter.WriteHeader(status)
+	data, _ := json.Marshal(struct {
+		Error string
+	}{
+		Error: err,
+	})
+	ctx.ResponseWriter.Write(data)
 }

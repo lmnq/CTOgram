@@ -20,7 +20,7 @@ type Route struct {
 
 // Router ..
 type Router struct {
-	Routes       []Route
+	Routes []Route
 }
 
 // NewRouter ..
@@ -105,5 +105,5 @@ func (r *Router) ServeHTTP(w http.ResponseWriter, req *http.Request) {
 		return
 	}
 
-	http.NotFound(w, req)
+	ctx.WriteError(http.StatusNotFound, "404 page not found")
 }
